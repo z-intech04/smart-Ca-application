@@ -1,9 +1,8 @@
-require('dotenv').config();
-const AWS = require('aws-sdk');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+const { BedrockRuntimeClient, InvokeModelCommand } = require('@aws-sdk/client-bedrock-runtime');
 
-const bedrock = new AWS.BedrockRuntime({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const bedrock = new BedrockRuntimeClient({
     region: process.env.AWS_REGION || 'us-east-1'
 });
 
@@ -44,12 +43,12 @@ async function test() {
             inferenceConfig: { maxTokens: 300, temperature: 0.1 }
         });
 
-        const result = await bedrock.invokeModel({
+        const result = await bedrock.send(new InvokeModelCommand({
             modelId: 'amazon.nova-micro-v1:0',
             contentType: 'application/json',
             accept: 'application/json',
             body
-        }).promise();
+        }));
 
         const responseBody = JSON.parse(Buffer.from(result.body).toString());
         const aiText = responseBody.output.message.content[0].text.trim();
