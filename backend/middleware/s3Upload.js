@@ -1,12 +1,12 @@
-const AWS = require('aws-sdk');
+const { S3Client, DeleteObjectCommand, DeleteObjectsCommand, ListObjectsV2Command } = require('@aws-sdk/client-s3');
+const { Upload } = require('@aws-sdk/lib-storage');
+const { GetObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const multer = require('multer');
-const path = require('path');
 
 // Configure AWS S3
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION || 'ap-south-1' // Mumbai region by default
+const s3 = new S3Client({
+  region: process.env.AWS_REGION || 'ap-south-1'
 });
 
 // Configure multer for memory storage
@@ -42,7 +42,6 @@ const uploadToS3 = async (file, clientId, documentType, year) => {
       Key: fileName,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'private', // Files are private by default
       Metadata: {
         clientId: clientId,
         documentType: documentType,
@@ -51,7 +50,7 @@ const uploadToS3 = async (file, clientId, documentType, year) => {
       }
     };
 
-    const result = await s3.upload(params).promise();
+    const result = await new Upload({ client: s3, params }).done();
 
     return {
       fileUrl: result.Location,
@@ -74,7 +73,7 @@ const getPresignedUrl = async (s3Key, expiresIn = 3600) => {
       Expires: expiresIn // URL expires in seconds (default 1 hour)
     };
 
-    const url = await s3.getSignedUrlPromise('getObject', params);
+    const url = await getSignedUrl(s3, new GetObjectCommand(params), { expiresIn });
     return url;
   } catch (error) {
     console.error('Presigned URL Error:', error);
@@ -90,7 +89,7 @@ const deleteFromS3 = async (s3Key) => {
       Key: s3Key
     };
 
-    await s3.deleteObject(params).promise();
+    await s3.send(new DeleteObjectCommand(params));
     return true;
   } catch (error) {
     console.error('S3 Delete Error:', error);
@@ -106,7 +105,7 @@ const listClientFiles = async (clientId) => {
       Prefix: `${clientId}/`
     };
 
-    const result = await s3.listObjectsV2(params).promise();
+    const result = await s3.send(new ListObjectsV2Command(params));
     return result.Contents || [];
   } catch (error) {
     console.error('S3 List Error:', error);
@@ -121,9 +120,9 @@ const deleteAllFiles = async () => {
       Bucket: process.env.AWS_S3_BUCKET_NAME
     };
 
-    const listedObjects = await s3.listObjectsV2(params).promise();
+    const listedObjects = await s3.send(new ListObjectsV2Command(params));
 
-    if (listedObjects.Contents.length === 0) {
+    if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
       return { deleted: 0 };
     }
 
@@ -134,7 +133,7 @@ const deleteAllFiles = async () => {
       }
     };
 
-    await s3.deleteObjects(deleteParams).promise();
+    await s3.send(new DeleteObjectsCommand(deleteParams));
 
     return { deleted: listedObjects.Contents.length };
   } catch (error) {

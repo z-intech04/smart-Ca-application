@@ -11,8 +11,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.1116.0",
+    "@aws-sdk/client-lex-runtime-v2": "^3.1116.0",
+    "@aws-sdk/client-s3": "^3.1116.0",
+    "@aws-sdk/lib-storage": "^3.1116.0",
+    "@aws-sdk/s3-request-presigner": "^3.1116.0",
     "@supabase/supabase-js": "^2.98.0",
-    "aws-sdk": "^2.1693.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

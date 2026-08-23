@@ -1,15 +1,10 @@
-const AWS = require('aws-sdk');
+const { LexRuntimeV2Client, RecognizeTextCommand } = require('@aws-sdk/client-lex-runtime-v2');
 
 class LexService {
   constructor() {
-    // Configure AWS
-    AWS.config.update({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    this.lexClient = new LexRuntimeV2Client({
       region: process.env.AWS_REGION || 'us-east-1'
     });
-
-    this.lexClient = new AWS.LexRuntimeV2();
     this.botId = process.env.LEX_BOT_ID;
     this.botAliasId = process.env.LEX_BOT_ALIAS_ID || 'TSTALIASID';
     this.localeId = process.env.LEX_LOCALE_ID || 'en_US';
@@ -26,7 +21,7 @@ class LexService {
       };
 
       console.log('🤖 Sending to Lex:', { message, sessionId });
-      const response = await this.lexClient.recognizeText(params).promise();
+      const response = await this.lexClient.send(new RecognizeTextCommand(params));
       console.log('✅ Lex response:', {
         intent: response.sessionState?.intent?.name,
         slots: response.sessionState?.intent?.slots
