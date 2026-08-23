@@ -3,9 +3,9 @@ services:
     name: ca-frontend
     env: static
     buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/build
+    staticPublishPath: ./frontend/dist
     envVars:
-      - key: REACT_APP_API_URL
+      - key: VITE_API_URL
         value: https://ca-backend-cqed.onrender.com/api
     routes:
       - type: rewrite

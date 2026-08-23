@@ -80,6 +80,11 @@
 
   .navbar-brand a {
     font-size: 18px;
+    display: block;
+    max-width: calc(100vw - 80px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .navbar-toggle {
@@ -110,5 +115,15 @@
 
   .user-name {
     margin-left: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .navbar {
+    padding: 12px;
+  }
+
+  .navbar-brand a {
+    font-size: 16px;
   }
 }

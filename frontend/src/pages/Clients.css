@@ -261,6 +261,10 @@
 }
 
 @media (max-width: 768px) {
+  .clients-container {
+    padding: 24px 16px;
+  }
+
   .clients-grid {
     grid-template-columns: 1fr;
   }
@@ -278,5 +282,25 @@
   .doc-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-btn {
+    padding: 10px 12px;
+  }
+
+  .doc-actions {
+    justify-content: stretch;
+  }
+
+  .doc-actions > * {
+    flex: 1;
+    text-align: center;
   }
 }

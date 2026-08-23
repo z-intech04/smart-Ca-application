@@ -1,3 +1,71 @@
 .App {
   min-height: 100vh;
 }
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .dashboard-container,
+  .clients-container,
+  .client-detail-container,
+  .form-container {
+    width: 100%;
+    padding: 24px 16px;
+  }
+
+  .dashboard-header,
+  .clients-header {
+    margin-bottom: 24px;
+  }
+
+  .dashboard-header h1,
+  .clients-header h1 {
+    font-size: 28px;
+  }
+
+  .stats-grid,
+  .action-grid,
+  .clients-grid,
+  .documents-grid,
+  .client-type-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-card,
+  .auth-card,
+  .client-info-card,
+  .documents-section {
+    padding: 20px 16px;
+  }
+
+  .form-actions,
+  .radio-group {
+    flex-direction: column;
+  }
+
+  .form-actions > *,
+  .radio-label {
+    width: 100%;
+  }
+}

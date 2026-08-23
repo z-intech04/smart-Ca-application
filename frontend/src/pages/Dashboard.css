@@ -51,6 +51,27 @@
   font-size: 14px;
 }
 
+@media (max-width: 600px) {
+  .stats-grid,
+  .action-grid {
+    gap: 14px;
+  }
+
+  .stat-card,
+  .action-card {
+    padding: 20px;
+  }
+
+  .stat-icon,
+  .action-icon {
+    font-size: 38px;
+  }
+
+  .stat-info h3 {
+    font-size: 30px;
+  }
+}
+
 .action-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
