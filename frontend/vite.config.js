@@ -1,26 +1,24 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+// Updated Vite config template
 export default defineConfig({
   plugins: [react()],
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.+\.js$/,
-    exclude: /node_modules/
-  },
+
   optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        '.js': 'jsx'
-      }
+    // ✅ Use rolldownOptions instead of esbuildOptions/rollupOptions
+    rolldownOptions: {
+      // Example: externalize certain deps or tweak optimization
+      // external: ['react', 'react-dom'],
     }
   },
-  server: {
-    port: 5173,
-    host: '0.0.0.0'
+  build: {
+    // Optional: customize build output
+    outDir: 'dist',
+    sourcemap: true,
   },
-  preview: {
-    port: 4173,
-    host: '0.0.0.0'
+  server: {
+    port: 3000,
+    open: true,
   }
 });
