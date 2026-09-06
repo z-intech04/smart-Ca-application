@@ -1,5 +1,22 @@
 .App {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8fafc;
+  border: none;
+  outline: none;
+}
+
+.App > *:not(nav):not(footer) {
+  flex: 1;
+}
+
+.dashboard-container,
+.clients-container,
+.client-detail-container,
+.form-container {
+  border: none;
+  outline: none;
 }
 
 html {
@@ -9,6 +26,8 @@ html {
 body {
   min-width: 320px;
   overflow-x: hidden;
+  border: none;
+  outline: none;
 }
 
 button,
@@ -24,22 +43,29 @@ svg {
 }
 
 @media (max-width: 768px) {
+  /* Edge-to-edge containers across all pages on mobile */
   .dashboard-container,
   .clients-container,
   .client-detail-container,
-  .form-container {
-    width: 100%;
-    padding: 24px 16px;
+  .form-container,
+  .add-client-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 14px 10px 48px !important;
+    box-sizing: border-box !important;
+    border: none;
+    outline: none;
   }
 
   .dashboard-header,
   .clients-header {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .dashboard-header h1,
   .clients-header h1 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .stats-grid,
@@ -48,15 +74,37 @@ svg {
   .documents-grid,
   .client-type-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .stat-card,
+  .action-card,
+  .client-card-modern,
+  .form-card,
+  .auth-card-modern,
+  .add-client-form-card,
+  .client-info-card,
+  .documents-section {
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
 
 @media (max-width: 480px) {
+  .dashboard-container,
+  .clients-container,
+  .client-detail-container,
+  .form-container,
+  .add-client-container {
+    padding: 10px 8px 40px !important;
+  }
+
   .form-card,
-  .auth-card,
   .client-info-card,
-  .documents-section {
-    padding: 20px 16px;
+  .documents-section,
+  .add-client-form-card {
+    padding: 20px 14px !important;
+    border-radius: 18px !important;
   }
 
   .form-actions,
@@ -69,3 +117,4 @@ svg {
     width: 100%;
   }
 }
+

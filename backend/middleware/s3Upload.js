@@ -5,9 +5,20 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const multer = require('multer');
 
 // Configure AWS S3
-const s3 = new S3Client({
-  region: process.env.AWS_REGION || 'ap-south-1'
-});
+const s3Region = process.env.AWS_S3_REGION || 'ap-south-1';
+const s3Config = {
+  region: s3Region
+};
+
+if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
+  s3Config.credentials = {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  };
+}
+
+const s3 = new S3Client(s3Config);
+
 
 // Configure multer for memory storage
 const storage = multer.memoryStorage();

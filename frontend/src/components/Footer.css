@@ -163,18 +163,22 @@
   margin: 0;
 }
 
-.legal-links {
-  display: flex;
-  gap: 1.5rem;
-}
+@media (max-width: 480px) {
+  .footer-container {
+    padding: 2.5rem 1rem;
+  }
 
-.legal-link {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-size: 0.75rem;
-  transition: color 0.2s ease;
-}
+  .footer-grid {
+    gap: 2rem;
+  }
 
-.legal-link:hover {
-  color: #ffffff;
-}
+  .legal-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .footer-bottom {
+    text-align: center;
+  }
+}

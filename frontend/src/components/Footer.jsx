@@ -91,9 +91,9 @@ const Footer = () => {
             &copy; {currentYear} SmartCA Docs Inc. All rights reserved.
           </p>
           <div className="legal-links">
-            <a href="#privacy" className="legal-link">Privacy Policy</a>
+            {/* <a href="#privacy" className="legal-link">Privacy Policy</a>
             <a href="#terms" className="legal-link">Terms of Service</a>
-            <a href="#security" className="legal-link">Security</a>
+            <a href="#security" className="legal-link">Security</a> */}
           </div>
         </div>
 
