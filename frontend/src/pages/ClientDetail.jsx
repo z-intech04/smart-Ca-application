@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../api';
+import api, { updateDocumentPaymentStatus } from '../api';
 import './ClientDetail.css';
 
 const CLIENT_TYPE_LABELS = {
@@ -62,7 +62,7 @@ function ClientDetail() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
-  const [editData, setEditData] = useState({ consultantPhone: '' });
+  const [editData, setEditData] = useState({ consultantPhone: '', paymentStatus: 'UNPAID' });
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [expandedYears, setExpandedYears] = useState({});
 
@@ -71,7 +71,10 @@ function ClientDetail() {
       const res = await api.get('/clients');
       const found = res.data.clients.find(c => c._id === clientId);
       setClient(found);
-      setEditData({ consultantPhone: found?.consultantPhone || '' });
+      setEditData({
+        consultantPhone: found?.consultantPhone || '',
+        paymentStatus: found?.paymentStatus || 'UNPAID'
+      });
     } catch {
       navigate('/clients');
     }
@@ -110,6 +113,17 @@ function ClientDetail() {
       setDocuments(documents.filter(d => d._id !== docId));
     } catch {
       alert('Failed to delete document');
+    }
+  };
+
+  const handleDocumentPaymentStatusChange = async (docId, paymentStatus) => {
+    try {
+      await updateDocumentPaymentStatus(docId, paymentStatus);
+      setDocuments(current => current.map(doc =>
+        doc._id === docId ? { ...doc, paymentStatus } : doc
+      ));
+    } catch {
+      alert('Failed to update document payment status');
     }
   };
 
@@ -161,6 +175,23 @@ function ClientDetail() {
               />
             ) : (
               <span className="value">{client.consultantPhone || 'Not set'}</span>
+            )}
+          </div>
+          <div className="detail-item">
+            <span className="label">💳 Payment:</span>
+            {editMode ? (
+              <select
+                value={editData.paymentStatus}
+                onChange={e => setEditData({ ...editData, paymentStatus: e.target.value })}
+                className="edit-input"
+              >
+                <option value="UNPAID">Unpaid — documents are watermarked</option>
+                <option value="PAID">Paid — share original documents</option>
+              </select>
+            ) : (
+              <span className="value">
+                {client.paymentStatus === 'PAID' ? 'Paid' : 'Unpaid — WhatsApp documents are watermarked'}
+              </span>
             )}
           </div>
           <div className="detail-item">
@@ -244,6 +275,15 @@ function ClientDetail() {
                                   </span>
                                 </div>
                                 <div className="doc-file-actions">
+                                  <select
+                                    aria-label={`Payment status for ${doc.fileName}`}
+                                    className="doc-payment-status"
+                                    value={doc.paymentStatus || client.paymentStatus || 'UNPAID'}
+                                    onChange={e => handleDocumentPaymentStatusChange(doc._id, e.target.value)}
+                                  >
+                                    <option value="UNPAID">Unpaid</option>
+                                    <option value="PAID">Paid</option>
+                                  </select>
                                   <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" className="btn-view-sm">
                                     👁️ View
                                   </a>

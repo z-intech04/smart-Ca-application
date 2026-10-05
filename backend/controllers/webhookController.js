@@ -2,6 +2,7 @@ const twilio = require('twilio');
 const Client = require('../models/Client');
 const Document = require('../models/Document');
 const PendingRequest = require('../models/PendingRequest');
+const { createDocumentShareUrl } = require('../utils/documentShare');
 
 // Twilio webhook handler
 exports.handleWhatsAppMessage = async (req, res) => {
@@ -158,7 +159,7 @@ Reply 'menu' to go back.`);
 
       let responseText = `📄 ${matchedType} Documents\n\n`;
       docs.forEach((doc, idx) => {
-        responseText += `${idx + 1}️⃣ ${doc.year}\n   ${doc.fileUrl}\n\n`;
+        responseText += `${idx + 1}️⃣ ${doc.year}\n   ${createDocumentShareUrl(doc)}\n\n`;
       });
       responseText += `Click on link to download\nReply 'menu' to go back`;
 
@@ -198,9 +199,10 @@ Reply 'menu' to go back.`);
       }
 
       // Send document link
-      const responseText = `📄 ${documentType} ${year}\n\n${document.fileUrl}\n\nReply 'menu' for main menu`;
+      const shareUrl = createDocumentShareUrl(document);
+      const responseText = `📄 ${documentType} ${year}\n\n${shareUrl}\n\nReply 'menu' for main menu`;
       twiml.message(responseText);
-      console.log('Sending document:', document.fileUrl);
+      console.log('Sending document:', document._id);
       return res.type('text/xml').send(twiml.toString());
     }
 

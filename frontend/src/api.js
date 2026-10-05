@@ -52,6 +52,8 @@ export const uploadDocument = (formData) => {
 };
 export const getAllDocuments = () => api.get('/documents');
 export const getClientDocuments = (clientId) => api.get(`/documents/client/${clientId}`);
+export const updateDocumentPaymentStatus = (id, paymentStatus) =>
+  api.patch(`/documents/${id}/payment-status`, { paymentStatus });
 export const deleteDocument = (id) => api.delete(`/documents/${id}`);
 
 export default api;

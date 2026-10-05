@@ -23,6 +23,11 @@ const clientSchema = new mongoose.Schema({
     enum: ['COMPANY', 'PARTNERSHIP_LLP', 'PROPRIETORSHIP', 'INDIVIDUAL', 'TRUST_NGO'],
     default: 'INDIVIDUAL'
   },
+  paymentStatus: {
+    type: String,
+    enum: ['UNPAID', 'PAID'],
+    default: 'UNPAID'
+  },
   consultantPhone: {
     type: String,
     trim: true,

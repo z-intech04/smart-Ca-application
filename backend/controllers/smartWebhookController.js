@@ -2,6 +2,7 @@ const twilio = require('twilio');
 const Client = require('../models/Client');
 const Document = require('../models/Document');
 const PendingRequest = require('../models/PendingRequest');
+const { createDocumentShareUrl } = require('../utils/documentShare');
 
 class SmartWebhookController {
     async handleWhatsAppMessage(req, res) {
@@ -262,7 +263,7 @@ Reply 'menu' to see other options.`;
         // Format response
         if (allMatchedDocs.length === 1) {
             const doc = allMatchedDocs[0];
-            return `📄 ${doc.documentType} ${doc.year}\n\n${doc.fileUrl}\n\nReply 'menu' for main menu`;
+            return `📄 ${doc.documentType} ${doc.year}\n\n${createDocumentShareUrl(doc)}\n\nReply 'menu' for main menu`;
         } else {
             // Multiple documents found
             let response = `📄 Found ${allMatchedDocs.length} documents:\n\n`;
@@ -279,7 +280,7 @@ Reply 'menu' to see other options.`;
             Object.keys(groupedDocs).forEach(docType => {
                 response += `📋 ${docType}:\n`;
                 groupedDocs[docType].forEach(doc => {
-                    response += `• ${doc.year} - ${doc.fileUrl}\n`;
+                    response += `• ${doc.year} - ${createDocumentShareUrl(doc)}\n`;
                 });
                 response += '\n';
             });
@@ -355,7 +356,7 @@ Reply 'menu' to go back.`;
         Object.keys(docsByType).forEach(type => {
             response += `📋 ${type} (${docsByType[type].length}):\n`;
             docsByType[type].forEach(doc => {
-                response += `• ${doc.year} - ${doc.fileUrl}\n`;
+                response += `• ${doc.year} - ${createDocumentShareUrl(doc)}\n`;
             });
             response += '\n';
         });
@@ -420,7 +421,7 @@ Reply 'menu' to go back.`;
 
             let response = `📄 ${matchedType} Documents\n\n`;
             docs.forEach((doc, idx) => {
-                response += `${idx + 1}️⃣ ${doc.year}\n   ${doc.fileUrl}\n\n`;
+                response += `${idx + 1}️⃣ ${doc.year}\n   ${createDocumentShareUrl(doc)}\n\n`;
             });
             response += `Click on link to download\nReply 'menu' to go back`;
             return response;
@@ -469,7 +470,7 @@ Reply 'menu' to go back.`;
             }
 
             // Send document link
-            return `📄 ${documentType} ${year}\n\n${document.fileUrl}\n\nReply 'menu' for main menu`;
+            return `📄 ${documentType} ${year}\n\n${createDocumentShareUrl(document)}\n\nReply 'menu' for main menu`;
         }
 
         return null; // No match found, will show main menu

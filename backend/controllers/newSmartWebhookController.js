@@ -5,6 +5,7 @@ const { BedrockRuntimeClient, InvokeModelCommand } = require('@aws-sdk/client-be
 const Client = require('../models/Client');
 const Document = require('../models/Document');
 const UserSession = require('../models/UserSession');
+const { createDocumentShareUrl } = require('../utils/documentShare');
 
 const bedrock = new BedrockRuntimeClient({
   region: process.env.AWS_REGION || 'us-east-1'
@@ -186,12 +187,12 @@ Respond ONLY in this exact JSON format with no extra text:
     const intro = aiReply ? `${aiReply}\n\n` : '';
 
     if (results.length === 1) {
-      return `${intro}📄 *${results[0].documentType} ${results[0].year}*\n\n${results[0].fileUrl}\n\nKuch aur chahiye? "hi" boliye 😊`;
+      return `${intro}📄 *${results[0].documentType} ${results[0].year}*\n\n${createDocumentShareUrl(results[0])}\n\nKuch aur chahiye? "hi" boliye 😊`;
     }
 
     let response = `${intro}📄 *${results.length} documents mile:*\n\n`;
     results.forEach((doc, i) => {
-      response += `${i + 1}. *${doc.documentType} ${doc.year}*\n${doc.fileUrl}\n\n`;
+      response += `${i + 1}. *${doc.documentType} ${doc.year}*\n${createDocumentShareUrl(doc)}\n\n`;
     });
     response += `Kuch aur chahiye? "hi" boliye 😊`;
     return response;

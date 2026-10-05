@@ -3,6 +3,7 @@ const Client = require('../models/Client');
 const Document = require('../models/Document');
 const PendingRequest = require('../models/PendingRequest');
 const lexService = require('../services/lexService');
+const { createDocumentShareUrl } = require('../utils/documentShare');
 
 class LexWebhookController {
   async handleWhatsAppMessage(req, res) {
@@ -154,7 +155,7 @@ You can contact your CA for more information.
 Reply 'menu' to see available options.`;
     }
 
-    return `📄 ${documentType} ${year}\n\n${document.fileUrl}\n\nReply 'menu' for main menu`;
+    return `📄 ${documentType} ${year}\n\n${createDocumentShareUrl(document)}\n\nReply 'menu' for main menu`;
   }
 
   getMainMenu(client) {
@@ -272,7 +273,7 @@ Reply 'menu' to go back to main menu.`;
         }
       }
 
-      return `📄 ${documentType} ${year}\n\n${document.fileUrl}\n\nReply 'menu' for main menu`;
+      return `📄 ${documentType} ${year}\n\n${createDocumentShareUrl(document)}\n\nReply 'menu' for main menu`;
     }
 
     return "I didn't understand that. Try asking:\n• 'Show my ITR 2025-26'\n• 'List my documents'\n• 'What's pending?'\n\nOr reply 'menu' to see options.";
@@ -317,7 +318,7 @@ Reply 'menu' to go back to main menu.`;
 
     let response = `📄 ${documentType} Documents\n\n`;
     docs.forEach((doc, idx) => {
-      response += `${idx + 1}️⃣ ${doc.year}\n   ${doc.fileUrl}\n\n`;
+      response += `${idx + 1}️⃣ ${doc.year}\n   ${createDocumentShareUrl(doc)}\n\n`;
     });
     response += `Click on link to download\nReply 'menu' to go back`;
     return response;

@@ -17,6 +17,11 @@ const documentSchema = new mongoose.Schema({
     trim: true
     // Removed enum validation to allow flexible document types like TDS-JAN, GST-MAR etc.
   },
+  paymentStatus: {
+    type: String,
+    enum: ['UNPAID', 'PAID'],
+    default: undefined
+  },
   fileUrl: {
     type: String,
     required: true

@@ -90,11 +90,18 @@ exports.deleteClient = async (req, res) => {
 // Update client
 exports.updateClient = async (req, res) => {
   try {
-    const { name, whatsappNumber, consultantPhone } = req.body;
+    const { name, whatsappNumber, consultantPhone, paymentStatus } = req.body;
 
     const updateData = {};
 
     if (name) updateData.name = name.trim();
+
+    if (paymentStatus !== undefined) {
+      if (!['UNPAID', 'PAID'].includes(paymentStatus)) {
+        return res.status(400).json({ error: 'Invalid payment status' });
+      }
+      updateData.paymentStatus = paymentStatus;
+    }
 
     if (whatsappNumber) {
       let normalizedNumber = whatsappNumber.trim();

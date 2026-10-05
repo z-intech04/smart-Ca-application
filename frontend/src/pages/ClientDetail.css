@@ -521,6 +521,16 @@
   align-items: center;
 }
 
+.doc-payment-status {
+  max-width: 110px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 12px;
+}
+
 .btn-view-sm {
   background: #eef2ff;
   color: #4f46e5;
@@ -618,4 +628,3 @@
     padding: 10px 8px 40px !important;
   }
 }
-

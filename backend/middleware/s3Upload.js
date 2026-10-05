@@ -92,6 +92,19 @@ const getPresignedUrl = async (s3Key, expiresIn = 3600) => {
   }
 };
 
+const getObjectFromS3 = async (s3Key, bucket = process.env.AWS_S3_BUCKET_NAME) => {
+  const result = await s3.send(new GetObjectCommand({
+    Bucket: bucket,
+    Key: s3Key
+  }));
+
+  const chunks = [];
+  for await (const chunk of result.Body) {
+    chunks.push(Buffer.from(chunk));
+  }
+  return Buffer.concat(chunks);
+};
+
 // Delete file from S3
 const deleteFromS3 = async (s3Key) => {
   try {
@@ -157,6 +170,7 @@ module.exports = {
   upload,
   uploadToS3,
   getPresignedUrl,
+  getObjectFromS3,
   deleteFromS3,
   listClientFiles,
   deleteAllFiles,

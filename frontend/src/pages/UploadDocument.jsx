@@ -39,7 +39,8 @@ function UploadDocument() {
     documentType: 'ITR_RETURN',
     period: 'YEARLY',
     month: '',
-    quarter: ''
+    quarter: '',
+    paymentStatus: 'UNPAID'
   });
   const [isCustom, setIsCustom] = useState(false);
   const [customDocName, setCustomDocName] = useState('');
@@ -54,6 +55,13 @@ function UploadDocument() {
     try {
       const res = await getClients();
       setClients(res.data.clients);
+      const preselectedClient = res.data.clients.find(client => client._id === preselectedClientId);
+      if (preselectedClient) {
+        setFormData(current => ({
+          ...current,
+          paymentStatus: preselectedClient.paymentStatus || 'UNPAID'
+        }));
+      }
     } catch {
       setError('Failed to load clients');
     }
@@ -89,6 +97,7 @@ function UploadDocument() {
       const fd = new FormData();
       fd.append('clientId', formData.clientId);
       fd.append('year', noYear ? 'N/A' : formData.year);
+      fd.append('paymentStatus', formData.paymentStatus);
 
       let docType = isCustom ? customDocName.trim().toUpperCase() : formData.documentType;
       if (!isCustom && needsMonth) docType = `${docType}-${formData.month}`;
@@ -121,7 +130,18 @@ function UploadDocument() {
           {/* Client */}
           <div className="form-group">
             <label>Select Client</label>
-            <select value={formData.clientId} onChange={e => setFormData({ ...formData, clientId: e.target.value })} required>
+            <select
+              value={formData.clientId}
+              onChange={e => {
+                const selectedClient = clients.find(client => client._id === e.target.value);
+                setFormData({
+                  ...formData,
+                  clientId: e.target.value,
+                  paymentStatus: selectedClient?.paymentStatus || 'UNPAID'
+                });
+              }}
+              required
+            >
               <option value="">Choose a client</option>
               {clients.map(c => (
                 <option key={c._id} value={c._id}>{c.name} ({c.whatsappNumber})</option>
@@ -244,6 +264,19 @@ function UploadDocument() {
               <small>Format: YYYY-YY (e.g., 2024-25)</small>
             </div>
           )}
+
+          <div className="form-group">
+            <label htmlFor="document-payment-status">Payment Status</label>
+            <select
+              id="document-payment-status"
+              value={formData.paymentStatus}
+              onChange={e => setFormData({ ...formData, paymentStatus: e.target.value })}
+              required
+            >
+              <option value="UNPAID">Payment incomplete — watermark document</option>
+              <option value="PAID">Payment complete — share original document</option>
+            </select>
+          </div>
 
           {/* File */}
           <div className="form-group">
