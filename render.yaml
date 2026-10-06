@@ -6,7 +6,7 @@ services:
     staticPublishPath: ./frontend/dist
     envVars:
       - key: VITE_API_URL
-        value: https://ca-backend-cqed.onrender.com/api
+        value: https://zintech04.com:5000/api
     routes:
       - type: rewrite
         source: /*
